@@ -1,0 +1,80 @@
+CREATE SCHEMA IF NOT EXISTS projeto;
+ALTER SCHEMA projeto OWNER TO postgres;
+SET SCHEMA 'projeto';
+
+DROP TABLE IF EXISTS Usuario CASCADE;
+CREATE TABLE Usuario (
+    id SERIAL PRIMARY KEY NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+	senha VARCHAR(100) NOT NULL
+);
+
+DROP TABLE IF EXISTS Aluno CASCADE;
+CREATE TABLE Aluno (
+    id INTEGER NOT NULL,
+    matricula INTEGER NOT NULL UNIQUE,
+    FOREIGN KEY (id) REFERENCES Usuario(id)
+);
+
+DROP TABLE IF EXISTS Professor CASCADE;
+CREATE TABLE Professor (
+    id INTEGER PRIMARY KEY NOT NULL,
+    FOREIGN KEY (id) REFERENCES Usuario(id)
+);
+
+DROP TABLE IF EXISTS Disciplina CASCADE;
+CREATE TABLE Disciplina(
+	id Serial PRIMARY KEY NOT NULL,
+	nome VARCHAR(100) UNIQUE NOT NULL
+);
+
+DROP TABLE IF EXISTS Professor_Disciplina CASCADE;
+CREATE TABLE Professor_Disciplina(
+	id_professor INTEGER NOT NULL,
+	id_disciplina INTEGER NOT NULL,
+	FOREIGN KEY (id_professor) REFERENCES Professor(id),
+	FOREIGN KEY (id_disciplina) REFERENCES Disciplina(id)
+);
+
+DROP TABLE IF EXISTS Funcionario CASCADE;
+CREATE TABLE Funcionario (
+    id INTEGER NOT NULL,
+    funcao VARCHAR(100) NOT NULL,
+    FOREIGN KEY (id) REFERENCES Usuario(id)
+);
+
+DROP TABLE IF EXISTS Sala CASCADE;
+CREATE TABLE Sala (
+    id Serial PRIMARY KEY NOT NULL,
+    nome VARCHAR(100) NOT NULL UNIQUE,
+    capacidade INTEGER NOT NULL
+);
+
+DROP TABLE IF EXISTS Reserva CASCADE;
+CREATE TABLE Reserva (
+    id Serial PRIMARY KEY NOT NULL,
+	id_sala INTEGER NOT NULL,
+    reservada_por INTEGER NOT NULL,
+    finalidade VARCHAR(100) NOT NULL,
+    n_participantes INTEGER NOT NULL,
+    dia DATE NOT NULL,
+    h_inicio TIME NOT NULL,
+    h_fim TIME NOT NULL,
+	FOREIGN KEY(id_sala) REFERENCES Sala(id),
+	FOREIGN KEY(reservada_por) REFERENCES Usuario(id)
+);
+
+DROP TABLE IF EXISTS Recurso CASCADE;
+CREATE TABLE Recurso (
+    id SERIAL PRIMARY KEY NOT NULL,
+    nome VARCHAR(100) NOT NULL UNIQUE
+);
+
+DROP TABLE IF EXISTS Sala_Recurso CASCADE;
+CREATE TABLE Sala_Recurso (
+    id_sala INTEGER NOT NULL,
+    id_recurso INTEGER NOT NULL,
+    FOREIGN KEY (id_sala) REFERENCES Sala(id),
+    FOREIGN KEY (id_recurso) REFERENCES Recurso(id)
+);
